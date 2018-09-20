@@ -66,10 +66,14 @@ var exports = module.exports = {}//exports是module.exports的引用
 node的模块类型分三类，分别是核心模块也就是原生模块、文件模块、自定义模块，在写引入模块的时候尽量带上文件名
 
 3.require方法
+
 ![require](images/require.png)
+
 根据_load(id)加载模块
+
 ![_load](images/_load.png)
-先通过`Module._cache[filename]`查看缓存是否有该模块，然后根据`NativeModule.nonInternalExists(filename)`判断是否是原生模块，之后才会根据路径加载，最后`return module.exports`.这里是根据_resolveFilename这个方法去解析路径和扩展名的
+
+先通过`Module._cache[filename]`查看缓存是否有该模块，然后根据`NativeModule.nonInternalExists(filename)`判断是否是原生模块，之后才会根据路径加载，最后`return module.exports`.这里是根据_resolveFilename这个方法去解析路径和扩展名的
 ```javascript
   var module = new Module(filename, parent);
   if (isMain) {
