@@ -4,7 +4,7 @@
 + [webpack resolve]()
 
 ## node模块加载机制
-node的实现借鉴commonJS来实现的模块加载机制，先简单的说一下commonJS规范。commonJS规范产生的原因
+node的实现借鉴commonJS来实现的模块加载机制，先简单的说一下commonJS规范。commonJS规范产生的原因
 
 >1.JavaScript没有模块系统。没有原生的支持密闭作用域或依赖管理。
 2.JavaScript没有标准库。除了一些核心库外，没有文件系统的API，没有IO流API等。
@@ -73,7 +73,7 @@ node的模块类型分三类，分别是核心模块也就是原生模块、文�
 
 ![_load](images/_load.png)
 
-先通过`Module._cache[filename]`查看缓存是否有该模块，然后根据`NativeModule.nonInternalExists(filename)`判断是否是原生模块，之后才会根据路径加载，最后`return module.exports`.这里是根据_resolveFilename这个方法去解析路径和扩展名的
+先通过`Module._cache[filename]`查看缓存是否有该模块，然后根据`NativeModule.nonInternalExists(filename)`判断是否是原生模块，之后才会根据路径加载，最后`return module.exports`.这里是根据_resolveFilename这个方法去解析路径和扩展名的
 ```javascript
   var module = new Module(filename, parent);
   if (isMain) {
