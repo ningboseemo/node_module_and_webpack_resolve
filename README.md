@@ -4,7 +4,7 @@
 + [webpack resolve](##webpack)
 
 ## node模块加载机制
-node的实现借鉴commonJS来实现的模块加载机制，先简单的说一下commonJS规范。commonJS规范产生的原因
+node的实现借鉴commonJS来实现的模块加载机制，先简单的说一下commonJS规范。commonJS规范产生的原因
 
 >1.JavaScript没有模块系统。没有原生的支持密闭作用域或依赖管理。
 2.JavaScript没有标准库。除了一些核心库外，没有文件系统的API，没有IO流API等。
@@ -186,9 +186,9 @@ import Test2 from 'xyz/file.js'; // 非精确匹配，触发普通解析
 
 ```
 别名匹配列表
+
 | 别名：	| import "xyz" |	import "xyz/file.js" |
 |------- | ------------ | ----------------------|
-
 |{}      |/abc/node_modules/xyz/index.js| /abc/node_modules/xyz/file.js|
 |{ xyz: "/abs/path/to/file.js" }|/abs/path/to/file.js|error|
 |{ xyz$: "/abs/path/to/file.js" }|/abs/path/to/file.js|/abc/node_modules/xyz/file.js|
@@ -204,16 +204,16 @@ import Test2 from 'xyz/file.js'; // 非精确匹配，触发普通解析
 |{ xyz: "xyz/dir" }|/abc/node_modules/xyz/dir/index.js|/abc/node_modules/xyz/dir/file.js|
 |{ xyz$: "xyz/dir" }|/abc/node_modules/xyz/dir/index.js|/abc/node_modules/xyz/file.js|
 
-一些其他的配置项
+一些其他的配置项
 ```javascript
 module.exports = {
   //...
   resolve: {
-    extensions: ['.wasm', '.mjs', '.js', '.json'],//自动解析确定的扩展,将替换默认的的数据
-    enforceExtension: false,//是否在引入模块必须加扩展名
-    mainFields: ['browser', 'module', 'main'],//引用包时从哪些文件引入
+    extensions: ['.wasm', '.mjs', '.js', '.json'],//自动解析确定的扩展,将替换默认的的数据
+    enforceExtension: false,//是否在引入模块必须加扩展名
+    mainFields: ['browser', 'module', 'main'],//引用包时从哪些文件引入
     mainFiles: ['index'],//解析目录时要使用的文件名
-    resolveLoader: {//loaderj解析的模块的单独配置
+    resolveLoader: {//loaderj解析的模块的单独配置
       modules: [ 'node_modules' ],
       extensions: [ '.js', '.json' ],
       mainFields: [ 'loader', 'main' ]
