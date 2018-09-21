@@ -29,7 +29,7 @@ commonJS 对模块的定义很简单，就是模块引用，模块定义，模�
 ### node
 node的模块加载是符合commomnJS规范的，node也在这基础上做一些自己的事情:
 
-1.定义模块
+1. 定义模块
 ```javascript
 module.exports = Module;
 ...
@@ -59,7 +59,11 @@ var exports = module.exports = {}//exports是module.exports的引用
 
 这从源码上拷过来的,有问题可以查阅一下[https://github.com/nodejs/node/blob/master/lib/internal/modules/cjs/loader.js](https://github.com/nodejs/node/blob/master/lib/internal/modules/cjs/loader.js)
 
-2.文件加载过程
+在`node`中`module`对象是这样的
+![module](images/module_id.png)
+
+
+2. 文件加载过程
 
 ![loadfile_2](images/loadfile_2.png)
 
