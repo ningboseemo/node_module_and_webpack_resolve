@@ -1,7 +1,7 @@
 # node 模块加载和webpack resolve
 
 + [node module](#node)
-+ [webpack resolve](##webpack.resolve)
++ [webpack resolve](#webpack.resolve)
 
 ## node模块加载机制
 node的实现借鉴commonJS来实现的模块加载机制，先简单的说一下commonJS规范。commonJS规范产生的原因
@@ -104,7 +104,7 @@ function tryModuleLoad(module, filename) {
 ```
 从代码中解析是这么一个加载的过程
 
-## webpack.resolve
+# webpack.resolve
 
 resolver 是一个库(library)，用于帮助找到模块的绝对路径。一个模块可以作为另一个模块的依赖模块，然后被后者引用，如下：
 ```javascript
@@ -113,7 +113,7 @@ import foo from 'path/to/module';
 require('path/to/module');
 
 ```
-### webpack 中的解析规则
+## webpack 中的解析规则
 使用 `enhanced-resolve`，`webpack` 能够解析三种文件路径：
 
 1. 使用 enhanced-resolve，webpack 能够解析三种文件路径：
@@ -149,7 +149,7 @@ webpack 根据构建目标(build target)为这些选项提供了合理的默认�
 每个文件系统访问都被缓存，以便更快触发对同一文件的多个并行或串行请求。在观察模式下，只有修改过的文件会从缓存中摘出。如果关闭观察模式，在每次编译前清理缓存。
 
 
-#### resolve.alias
+### resolve.alias
 创建 import 或 require 的别名，来确保模块引入变得更简单。
 ```javascript
 module.exports = {
@@ -180,7 +180,7 @@ module.exports = {
   }
 };
 
-//结果
+//结果
 import Test1 from 'xyz'; // 精确匹配，所以 path/to/file.js 被解析和导入
 import Test2 from 'xyz/file.js'; // 非精确匹配，触发普通解析
 
