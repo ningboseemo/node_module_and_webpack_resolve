@@ -1,7 +1,7 @@
 # node 模块加载和webpack resolve
 
 + [node module](#node)
-+ [webpack resolve](##webpack)
++ [webpack resolve](##webpack.resolve)
 
 ## node模块加载机制
 node的实现借鉴commonJS来实现的模块加载机制，先简单的说一下commonJS规范。commonJS规范产生的原因
@@ -104,7 +104,7 @@ function tryModuleLoad(module, filename) {
 ```
 从代码中解析是这么一个加载的过程
 
-## webpack resolve
+## webpack.resolve
 
 resolver 是一个库(library)，用于帮助找到模块的绝对路径。一个模块可以作为另一个模块的依赖模块，然后被后者引用，如下：
 ```javascript
