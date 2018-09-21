@@ -181,6 +181,7 @@ import Test1 from 'xyz'; // 精确匹配，所以 path/to/file.js 被解析和�
 import Test2 from 'xyz/file.js'; // 非精确匹配，触发普通解析
 
 ```
+别名匹配列表
 | 别名：	| import "xyz" |	import "xyz/file.js" |
 |------- | ------------ | ----------------------|
 |{}      |/abc/node_modules/xyz/index.js| /abc/node_modules/xyz/file.js|
@@ -197,3 +198,22 @@ import Test2 from 'xyz/file.js'; // 非精确匹配，触发普通解析
 |{ xyz: "modu/dir" }|/abc/node_modules/modu/dir/index.js|/abc/node_modules/dir/file.js|
 |{ xyz: "xyz/dir" }|/abc/node_modules/xyz/dir/index.js|/abc/node_modules/xyz/dir/file.js|
 |{ xyz$: "xyz/dir" }|/abc/node_modules/xyz/dir/index.js|/abc/node_modules/xyz/file.js|
+
+一些其他的配置项
+```javascript
+module.exports = {
+  //...
+  resolve: {
+    extensions: ['.wasm', '.mjs', '.js', '.json'],//自动解析确定的扩展,将替换默认的的数据
+    enforceExtension: false,//是否在引入模块必须加扩展名
+    mainFields: ['browser', 'module', 'main'],//引用包时从哪些文件引入
+    mainFiles: ['index'],//解析目录时要使用的文件名
+    resolveLoader: {//loaderj解析的模块的单独配置
+      modules: [ 'node_modules' ],
+      extensions: [ '.js', '.json' ],
+      mainFields: [ 'loader', 'main' ]
+    }
+  }
+};
+
+```
