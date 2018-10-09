@@ -183,6 +183,75 @@ function tryModuleLoad(module, filename) {
   }
 }
 ```
+module.load
+
+```javascript
+// Given a file name, pass it to the proper extension handler.
+Module.prototype.load = function(filename) {
+  debug('load %j for module %j', filename, this.id);
+
+  assert(!this.loaded);
+  this.filename = filename;
+  this.paths = Module._nodeModulePaths(path.dirname(filename));
+
+  var extension = path.extname(filename) || '.js';
+  if (!Module._extensions[extension]) extension = '.js';
+  Module._extensions[extension](this, filename);
+  this.loaded = true;
+
+  if (experimentalModules) {
+    if (asyncESM === undefined) lazyLoadESM();
+    const ESMLoader = asyncESM.ESMLoader;
+    const url = pathToFileURL(filename);
+    const urlString = `${url}`;
+    const exports = this.exports;
+    if (ESMLoader.moduleMap.has(urlString) !== true) {
+      ESMLoader.moduleMap.set(
+        urlString,
+        new ModuleJob(ESMLoader, url, async () => {
+          const ctx = createDynamicModule(
+            ['default'], url);
+          ctx.reflect.exports.default.set(exports);
+          return ctx;
+        })
+      );
+    } else {
+      const job = ESMLoader.moduleMap.get(urlString);
+      if (job.reflect)
+        job.reflect.exports.default.set(exports);
+    }
+  }
+};
+
+```
+```if (!Module._extensions[extension]) extension = '.js';```如果不是node识别的扩展名的时候当成js文件来解析
+`Module._extensions`是一个对象以扩展名为键值的对象
+```
+// Native extension for .js
+Module._extensions['.js'] = function(module, filename) {
+  var content = fs.readFileSync(filename, 'utf8');
+  module._compile(stripBOM(content), filename);
+};
+Module._extensions['.json'] = function(module, filename) {...};
+Module._extensions['.node'] = function(module, filename) {...};
+if (experimentalModules) {
+  if (asyncESM === undefined) lazyLoadESM();
+  Module._extensions['.mjs'] = function(module, filename) {
+    throw new ERR_REQUIRE_ESM(filename);
+  };
+}
+//得到一个扩展名数组['.js', '.json', '.node', '.mjs']
+function readExtensions() {
+  const exts = Object.keys(Module._extensions);
+  for (var i = 0, j = 0; i < exts.length; ++i) {
+    if (path.extname(exts[i]) === '')
+      exts[j++] = exts[i];
+  }
+  exts.length = j;
+  return exts;
+}
+```
+加载文件的时候，寻找没有扩展名的文件也是按`['.js', '.json', '.node', '.mjs']`来加载模块的
 从代码中解析是这么一个加载的过程
 
 # webpack.resolve
