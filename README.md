@@ -59,25 +59,106 @@ var exports = module.exports = {}//exports是module.exports的引用
 
 这从源码上拷过来的,有问题可以查阅一下[https://github.com/nodejs/node/blob/master/lib/internal/modules/cjs/loader.js](https://github.com/nodejs/node/blob/master/lib/internal/modules/cjs/loader.js)
 
-在`node`中`module`对象是这样的
-![module](images/module_id.png)
+在`node`中`module`对象是这样的
+```javascript
+//increment.js
+var add = require('./math').add;
+exports.increment = function(val) {
+    return add(val, 1);
+};
+exports.moduleA = module
+
+//module对象
+add = require('./increment')
+{ increment: [Function],
+  moduleA: 
+   Module {
+     id: '/Users/chang/Documents/learn/node-learn/node-module/increment.js',
+     exports: [Circular],
+     parent: 
+      Module {
+        id: '<repl>',
+        exports: {},
+        parent: undefined,
+        filename: null,
+        loaded: false,
+        children: [Array],
+        paths: [Array] },
+     filename: '/Users/chang/Documents/learn/node-learn/node-module/increment.js',
+     loaded: true,
+     children: [ [Object] ],
+     paths: 
+      [ '/Users/chang/Documents/learn/node-learn/node-module/node_modules',
+        '/Users/chang/Documents/learn/node-learn/node_modules',
+        '/Users/chang/Documents/learn/node_modules',
+        '/Users/chang/Documents/node_modules',
+        '/Users/chang/node_modules',
+        '/Users/node_modules',
+        '/node_modules' ] } }
+```
 
 
 2. 文件加载过程
 
-![loadfile_2](images/loadfile_2.png)
+![流程图](https://github.com/ningboseemo/node_module_and_webpack_resolve/blob/master/images/loadfile_2.png)
 
 node的模块类型分三类，分别是核心模块也就是原生模块、文件模块、自定义模块，在写引入模块的时候尽量带上文件名
 
 3.require方法
 
-![require](images/require.png)
+```javascript
+// Loads a module at the given file path. Returns that module's
+// `exports` property.
+Module.prototype.require = function(id) {
+  if (typeof id !== 'string') {
+    throw new ERR_INVALID_ARG_TYPE('id', 'string', id);
+  }
+  if (id === '') {
+    throw new ERR_INVALID_ARG_VALUE('id', id,
+                                    'must be a non-empty string');
+  }
+  return Module._load(id, this, /* isMain */ false);
+};
+```
 
 根据_load(id)加载模块
 
-![_load](images/_load.png)
+```javascript
+Module._load = function(request, parent, isMain) {
+  if (parent) {
+    debug('Module._load REQUEST %s parent: %s', request, parent.id);
+  }
 
-先通过`Module._cache[filename]`查看缓存是否有该模块，然后根据`NativeModule.nonInternalExists(filename)`判断是否是原生模块，之后才会根据路径加载，最后`return module.exports`.这里是根据_resolveFilename这个方法去解析路径和扩展名的
+  var filename = Module._resolveFilename(request, parent, isMain);
+
+  var cachedModule = Module._cache[filename];
+  if (cachedModule) {
+    updateChildren(parent, cachedModule, true);
+    return cachedModule.exports;
+  }
+
+  if (NativeModule.nonInternalExists(filename)) {
+    debug('load native module %s', request);
+    return NativeModule.require(filename);
+  }
+
+  // Don't call updateChildren(), Module constructor already does.
+  var module = new Module(filename, parent);
+
+  if (isMain) {
+    process.mainModule = module;
+    module.id = '.';
+  }
+
+  Module._cache[filename] = module;
+
+  tryModuleLoad(module, filename);
+
+  return module.exports;
+};
+```
+
+先通过`Module._cache[filename]`查看缓存是否有该模块，然后根据`NativeModule.nonInternalExists(filename)`判断是否是原生模块，之后才会根据路径加载，最后`return module.exports`.这里是根据_resolveFilename这个方法去解析路径和扩展名的
 ```javascript
   var module = new Module(filename, parent);
   if (isMain) {
@@ -122,6 +203,7 @@ import '/home/me/file';
 import 'C:\\Users\\me\\file';
 ```
 由于我们已经取得文件的绝对路径，因此不需要进一步再做解析。
+
 2. 相对路径
 ```javascript
 import 'module';
