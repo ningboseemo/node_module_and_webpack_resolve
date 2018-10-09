@@ -226,7 +226,7 @@ Module.prototype.load = function(filename) {
 ```
 ```if (!Module._extensions[extension]) extension = '.js';```如果不是node识别的扩展名的时候当成js文件来解析
 `Module._extensions`是一个对象以扩展名为键值的对象
-```
+```javascript
 // Native extension for .js
 Module._extensions['.js'] = function(module, filename) {
   var content = fs.readFileSync(filename, 'utf8');
