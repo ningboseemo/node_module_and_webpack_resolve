@@ -100,7 +100,7 @@ add = require('./increment')
 
 2. 文件加载过程
 
-![流程图](https://github.com/ningboseemo/node_module_and_webpack_resolve/blob/master/images/loadfile_2.png)
+[流程图](https://github.com/ningboseemo/node_module_and_webpack_resolve/blob/master/images/loadfile_2.png)
 
 node的模块类型分三类，分别是核心模块也就是原生模块、文件模块、自定义模块，在写引入模块的时候尽量带上文件名
 
